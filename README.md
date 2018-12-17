@@ -18,3 +18,23 @@ Once the we have CloudTrail setup we can go to the Lambda console and create a n
 When creating the function, select Edit code inline and use the *Addtag.py*
 
 For the IAM role select create a custom role and then on the role creation page select Create a new IAM Role with name lambda_ec2_tagging and update the policy document with this policy:
+
+Then complete the creation of the function and go to the CloudWatch Events console, this can be located in the CloudWatch console under Events -> Rules and the steps are:
+1.	Select Create Rule
+2.	Select Build event pattern to match events by service
+3.	Service Name: EC2
+4.	Event Type: AWS API Call via CloudTrail
+5.	Select Specific operation(s)
+6.	Select CreateTags
+7.	Select Add target
+8.	Select Lambda function
+9.	Function: tag_ec2_dependencies (or the name of the function if you used a different name)
+10.	We leave version alias and input in their default values
+11.	Select Configure details
+12.	Give a name to the rule: tag_ec2_dependencies
+13.	Add a description
+14.	State: enabled
+
+
+Now every time the tags of an instance are modified or a new instance is created the tags will propagate to the EBS volumes and ENIs attached to the instance, you can test it by creating a new instance or adding new tags to an existing one on web console (if you add tags to an existing instance only the new tags will be added).
+Note: this will propagate new tags to EBS volumes and ENIs when they are added to the instance but will not delete tags from them when they are deleted from the instance, for this you will need to create a new rule in CloudWatch Events to capture DeleteTags and create a new Lambda function that deletes the tags from the dependent resources. 
