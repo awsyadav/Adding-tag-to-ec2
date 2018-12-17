@@ -16,3 +16,5 @@ Once the we have CloudTrail setup we can go to the Lambda console and create a n
 * Timeout: 10 seconds
 
 When creating the function, select Edit code inline and use the *Addtag.py*
+
+For the IAM role select create a custom role and then on the role creation page select Create a new IAM Role with name lambda_ec2_tagging and update the policy document with this policy:
